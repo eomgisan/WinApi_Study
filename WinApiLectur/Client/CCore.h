@@ -71,9 +71,14 @@ private :
 
 class CCore {
 private:
-	HWND	m_hWnd;			// 메인 윈도우 핸들러
-	POINT	m_ptResolution;	// 메인 윈도우 해상도
-	HDC		m_hDc;			// 그리기 커널 오브젝트
+	HWND		m_hWnd;			// 메인 윈도우 핸들러
+	POINT		m_ptResolution;	// 메인 윈도우 해상도
+	HDC			m_hDc;			// 그리기 커널 오브젝트
+
+
+	// 이중 버퍼리을 위한 객체들
+	HBITMAP		m_hBit;			
+	HDC			m_memDc;
 	/*
 	static CCore* GetInst() {
 		static CCore core;   
@@ -94,9 +99,10 @@ public:
 private:
 	void update();
 	void render();
-private:
-	CCore();
-	~CCore();
+
+public:
+	HWND getHWND();
+
 };
 
 

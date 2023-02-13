@@ -3,18 +3,27 @@
 #include "CObject.h"
 
 
+#include "CTimeMgr.h"
+#include "CKeyMgr.h"
 CObject g_obj;
 
 CCore::CCore() :
 	m_hWnd(0),
-	m_ptResolution({}),
-	m_hDc(0)
+	m_ptResolution{},
+	m_hDc(0),
+	m_hBit(0),
+	m_memDc(0)
 {
 }
 
 CCore::~CCore()
 {
+	// 윈도우 핸들러로 만든 getDc 를 통해 만든거는 release로 지우기
 	ReleaseDC(m_hWnd, m_hDc);
+
+	// createcompatable 로생성된 DC는 release가 아닌 delete로 지우기
+	DeleteDC(m_memDc);
+	DeleteObject(m_hBit);
 }
 int CCore::init(HWND _hWnd, POINT _ptResolution)
 {
@@ -49,8 +58,29 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	// 그러므로 윈도우에서 제공하는 getDc함수를 통해 hdc를 가져온다.
 	m_hDc = GetDC(m_hWnd);
 
-	g_obj.m_ptPos = POINT{ m_ptResolution.x/2, m_ptResolution.y/2 };
-	g_obj.m_ptScale = POINT{ 100,100 };
+
+
+
+	// 더블 버퍼링 용도의 비트맵과 dc를 만든다.
+
+	// compatible -> 나중에 m_hBit와 m_hDc와 호환해야하니 호환성 고려해서 사용되는 함수임을 알려줌
+	m_hBit = CreateCompatibleBitmap(m_hDc, m_ptResolution.x, m_ptResolution.y);
+	m_memDc = CreateCompatibleDC(m_hDc);
+
+
+	// mem_Dc 와 hBit 와 연결시켜주는거 펜 브러시 바꾸는것과 같은거야
+	// 기본적으로 1픽셀짜리 비트맵과 연결되어있어 이건 필요없으니 바로 지우는거!
+	HBITMAP hOldBit = (HBITMAP)SelectObject(m_memDc, m_hBit);
+	DeleteObject(hOldBit);
+
+	// Manager 초기화
+
+	CTimeMgr::GetInst()->init();
+	CKeyMgr::GetInst()->init();
+
+	
+	g_obj.SetPos(Vec2( (int)(m_ptResolution.x / 2) , (int)(m_ptResolution.y /2) ));
+	g_obj.SetScale(Vec2( 100,100 ));
 
 	return S_OK;
 }
@@ -58,8 +88,9 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 
 void CCore::process()
 {
-	
 	// 메세지 가 없을때 처리될 일들
+	CTimeMgr::GetInst()->update();
+	CKeyMgr::GetInst()->update();
 
 	// 물체들의 변경점 확인
 	update();
@@ -75,32 +106,74 @@ void CCore::update()
 	// 비동기식 키 입력 받기
 	// 원래 리턴값은 키입력의 모든 로그를 줌 ( 과거에 눌린건지, 지금 눌린건지 다 합쳐서 )
 	// 0x8000과 비트연산하면 지금 눌린건지 확인할수 있다.
-	if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
-		g_obj.m_ptPos.x -= 1;
+
+
+
+	// 움직이는 값이 고정값이면 update 횟수가 컴퓨터 성능별로 다르니 속도가 달라져
+	// 그러므로 우리는 고정값이 아닌 변수를 줘야함
+	// 이동량 X (1/프레임) = 초당가고싶은 이동량
+
+	// 또한 프레임은 계속 변화하니 매니저를 만들어서 계속해서 계산이 되어야함
+
+	Vec2 vPos = g_obj.GetPos();
+
+	if (CKeyMgr::GetInst()->GetKeyState(KEY::LEFT) == KEY_STATE::HOLD) {
+		vPos.x -= 200.f * fDT;
 	}
 	
-	if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
-		g_obj.m_ptPos.x += 1;
+	if (CKeyMgr::GetInst()->GetKeyState(KEY::RIGHT) == KEY_STATE::HOLD) {
+		vPos.x += 200.f * fDT;
 	}
 
-	if (GetAsyncKeyState(VK_UP) & 0x8000) {
-		g_obj.m_ptPos.y += 1;
+	if (CKeyMgr::GetInst()->GetKeyState(KEY::UP) == KEY_STATE::HOLD) {
+		vPos.y -= 200.f * fDT;
 	}
 	
-	if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
-		g_obj.m_ptPos.x -= 1;
+	if (CKeyMgr::GetInst()->GetKeyState(KEY::DOWN) == KEY_STATE::HOLD) {
+		vPos.y += 200.f * fDT;
 	}
 
+	g_obj.SetPos(vPos);
 
 	
 }
 
+
+// 더블 버퍼링을 통해 잔상을 없애자!
 void CCore::render()
 {
-	Rectangle(m_hDc,
-		g_obj.m_ptPos.x - g_obj.m_ptScale.x / 2,
-		g_obj.m_ptPos.y - g_obj.m_ptScale.y / 2,
-		g_obj.m_ptPos.x + g_obj.m_ptScale.x / 2,
-		g_obj.m_ptPos.y + g_obj.m_ptScale.y / 2
-	);
+	// m_memDC에 그리기
+
+
+	// 화면 청소 ( 실제 해상도보다 -1 , +1 을 통해 마지막에 남는 테두리까지 지워버리기 )
+	Rectangle(m_memDc, -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1); // 이건 너무 느릴거같은뎅
+
+
+	// 실제 그리는 코드 부분은 여기서부터 그리자!!!!!!!!!!!!
+
+	Vec2 vPos = g_obj.GetPos();
+	Vec2 vScale = g_obj.GetScale();
+	Rectangle(m_memDc,
+		int(vPos.x - vScale.x / 2.f),
+		int(vPos.y - vScale.y / 2.f),
+		int(vPos.x + vScale.x / 2.f),
+		int(vPos.y + vScale.y / 2.f));
+
+
+
+	// m_hDc에 옮기기
+
+	// 서로 다른 DC끼리 각 픽셀을 모두 복붙시키기
+	// ( 목적지, 크기, 출발지, 시작 지점, 명령어 )
+	BitBlt(m_hDc, 0, 0, m_ptResolution.x, m_ptResolution.y,
+		m_memDc, 0, 0, SRCCOPY);
+
+	// 더이상 아무리 그림그린다해도 거의 프레임 안떨어짐 왜냐면 그리는것보다 옮기고 이러는 for문이 비용이 훨씬 큼
+	// 또한 Debug모드는 표준 라이브러리에서 예외처리가 많이 되어있는데 Release모드에서는 예외처리가 다 떨어져 나가면서 
+	// 프레임이 오르게된다.
+}
+
+HWND CCore::getHWND()
+{
+	return m_hWnd;
 }

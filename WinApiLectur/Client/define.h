@@ -5,7 +5,8 @@
 
 
 // Singleton 매크로
-#define SINGLE(type) public: static type* GetInst() {static type mgr; return &mgr;}
+#define SINGLE(type) public: static type* GetInst() {static type mgr; return &mgr;}\
+					 private: type(); ~type();
 
 // 아래와 같다. 즉 엔터를 치고 싶으면 마지막에 역슬레시 \ 를 추가해줘야함
 /*
@@ -15,3 +16,20 @@
 	return &mgr;\
  }
  */
+
+// Delta Time 매크로
+#define fDT CTimeMgr::GetInst()->GetfDt()
+
+
+enum class GROUP_TYPE {
+	DEFAULT,
+
+	PLAYER,
+
+	MISSILE,
+
+	MONSTER,
+
+
+	END = 32,
+};

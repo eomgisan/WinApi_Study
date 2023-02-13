@@ -10,23 +10,32 @@
     <Filter Include="Engine\01.Header">
       <UniqueIdentifier>{37c62716-4ae8-46cc-a5f6-c6795ecdef6a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\02.Core">
-      <UniqueIdentifier>{3b6aae06-87ad-4074-9cce-2e37b2ee44ce}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Default\리소스 파일">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Engine\03.Manager">
-      <UniqueIdentifier>{8bf24b7a-a17b-4cd5-a4ad-f0a051479a6d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\04.CObject">
       <UniqueIdentifier>{69662c69-b046-43ca-b205-c889313b3944}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03.Manager %28SingleTon%29">
+      <UniqueIdentifier>{8bf24b7a-a17b-4cd5-a4ad-f0a051479a6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03.Manager %28SingleTon%29\KeyMgr">
+      <UniqueIdentifier>{1e5aa856-de38-4db8-be5c-f728dc6c295f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03.Manager %28SingleTon%29\TimeMgr">
+      <UniqueIdentifier>{497fb60d-b04e-4fb9-b712-2c40f52b0b52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\02.Core %28SingleTon%29">
+      <UniqueIdentifier>{3b6aae06-87ad-4074-9cce-2e37b2ee44ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05.Scene">
+      <UniqueIdentifier>{f1e24a3a-927e-48ca-83bf-a713dd071a7a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCore.h">
-      <Filter>Engine\02.Core</Filter>
+      <Filter>Engine\02.Core %28SingleTon%29</Filter>
     </ClInclude>
     <ClInclude Include="framework.h">
       <Filter>Default</Filter>
@@ -44,23 +53,38 @@
       <Filter>Engine\01.Header</Filter>
     </ClInclude>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="CKeyMgr.h">
-      <Filter>Engine\03.Manager</Filter>
-    </ClInclude>
     <ClInclude Include="CObject.h">
       <Filter>Engine\04.CObject</Filter>
+    </ClInclude>
+    <ClInclude Include="struct.h">
+      <Filter>Engine\01.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="CKeyMgr.h">
+      <Filter>Engine\03.Manager %28SingleTon%29\KeyMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CTimeMgr.h">
+      <Filter>Engine\03.Manager %28SingleTon%29\TimeMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CScene.h">
+      <Filter>Engine\05.Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
-      <Filter>Engine\02.Core</Filter>
-    </ClCompile>
-    <ClCompile Include="CKeyMgr.cpp">
-      <Filter>Engine\03.Manager</Filter>
+      <Filter>Engine\02.Core %28SingleTon%29</Filter>
     </ClCompile>
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="CObject.cpp">
       <Filter>Engine\04.CObject</Filter>
+    </ClCompile>
+    <ClCompile Include="CKeyMgr.cpp">
+      <Filter>Engine\03.Manager %28SingleTon%29\KeyMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CTimeMgr.cpp">
+      <Filter>Engine\03.Manager %28SingleTon%29\TimeMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene.cpp">
+      <Filter>Engine\05.Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
