@@ -32,6 +32,18 @@
     <Filter Include="Engine\05.Scene">
       <UniqueIdentifier>{f1e24a3a-927e-48ca-83bf-a713dd071a7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\03.Manager %28SingleTon%29\SceneMgr">
+      <UniqueIdentifier>{70492b0d-8a95-4e50-a47a-aa623c0430fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05.Scene\Scene_Tool">
+      <UniqueIdentifier>{140c81d9-2204-4cca-bbac-3c49dd8c4f09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05.Scene\Scene_Start">
+      <UniqueIdentifier>{186e6297-2f6f-4451-a435-f120501b219a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04.CObject\Player">
+      <UniqueIdentifier>{aa6b7cd5-4463-43f8-a7fc-ff9591f7f756}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCore.h">
@@ -68,6 +80,15 @@
     <ClInclude Include="CScene.h">
       <Filter>Engine\05.Scene</Filter>
     </ClInclude>
+    <ClInclude Include="CSceneMgr.h">
+      <Filter>Engine\03.Manager %28SingleTon%29\SceneMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CScene_Start.h">
+      <Filter>Engine\05.Scene\Scene_Start</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayer.h">
+      <Filter>Engine\04.CObject\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -85,6 +106,15 @@
     </ClCompile>
     <ClCompile Include="CScene.cpp">
       <Filter>Engine\05.Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="CSceneMgr.cpp">
+      <Filter>Engine\03.Manager %28SingleTon%29\SceneMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene_Start.cpp">
+      <Filter>Engine\05.Scene\Scene_Start</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayer.cpp">
+      <Filter>Engine\04.CObject\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

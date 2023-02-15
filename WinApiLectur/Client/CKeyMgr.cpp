@@ -55,6 +55,20 @@ void CKeyMgr::update()
 	// 윈도우가 포커싱될때
 	if (hWnd != nullptr) {
 		for (int i = 0; i < (int)KEY::LAST; ++i) {
+
+			// 비동기식 키 입력 받기
+			// 원래 리턴값은 키입력의 모든 로그를 줌 ( 과거에 눌린건지, 지금 눌린건지 다 합쳐서 )
+			// 0x8000과 비트연산하면 지금 눌린건지 확인할수 있다.
+
+
+
+			// 움직이는 값이 고정값이면 update 횟수가 컴퓨터 성능별로 다르니 속도가 달라져
+			// 그러므로 우리는 고정값이 아닌 변수를 줘야함
+			// 이동량 X (1/프레임) = 초당가고싶은 이동량
+
+			// 또한 프레임은 계속 변화하니 매니저를 만들어서 계속해서 계산이 되어야함
+
+
 			if (GetAsyncKeyState(g_arrVK[i]) & 0x8000) {
 				if (m_vecKey[i].bPrevPush) {
 					m_vecKey[i].eState = KEY_STATE::HOLD;

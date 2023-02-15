@@ -1,13 +1,28 @@
 #include "pch.h"
 #include "CObject.h"
 
-CObject::CObject():
+#include "CKeyMgr.h"
+#include "CTimeMgr.h"
+
+
+void CObject::render(HDC _hDc)
+{
+
+	Rectangle(_hDc,
+		(int)(m_vPos.x - m_vScale.x / 2.f),
+		(int)(m_vPos.y - m_vScale.y / 2.f),
+		(int)(m_vPos.x + m_vScale.x / 2.f),
+		(int)(m_vPos.y + m_vScale.y / 2.f));
+}
+
+CObject::CObject() :
 	m_vPos(),
 	m_vScale()
 {
-	
+
 }
 
 CObject::~CObject()
 {
 }
+

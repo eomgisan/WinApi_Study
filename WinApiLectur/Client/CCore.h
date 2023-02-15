@@ -97,7 +97,7 @@ public:
 	void process();
 
 private:
-	void update();
+
 	void render();
 
 public:
